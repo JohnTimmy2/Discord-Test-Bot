@@ -1,6 +1,9 @@
 const { SlashCommandBuilder } = require('discord.js');
+const { execute } = require('../moderation/ban');
 
-const data = new SlashCommandBuilder()
+module.exports = {
+
+data: new SlashCommandBuilder()
     .setName('info')
     .setDescription('Get info about our server')
     .addSubcommand((subcommand) =>
@@ -17,4 +20,17 @@ const data = new SlashCommandBuilder()
         subcommand
             .setName('server')
             .setDescription('info about the server'),
-    );
+    ),
+async execute(interaction) {
+    if (interaction.options.getSubcommand() === 'user'){
+        const user = interaction.options.getUser('target');
+        if (user) {
+            await interaction.reply(`Username: ${user.username}\nYour ID: ${interaction.user.id}`);
+        }
+    } else if (interaction.options.getSubcommand() === 'server') {
+        await interaction.reply(
+        `Sever name: ${interaction.guild.name}\nTotal memebers: ${interaction.guild.memberCount}`,
+        );
+    }
+},
+};
